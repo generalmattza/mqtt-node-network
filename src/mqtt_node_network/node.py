@@ -25,6 +25,7 @@ from prometheus_client import Counter
 
 from mqtt_node_network.configuration import (
     MQTTConnectProperties,
+    MQTTPublishProperties,
     TLSConfig,
     initialize_config,
     MQTTBrokerConfig,
@@ -280,8 +281,12 @@ class MQTTNode:
         self.reconnect_attempts: int = broker_config.reconnect_attempts
         self.clean_session: bool = broker_config.clean_session
 
+       default_packet_properties =  {
+            PacketTypes.CONNECT: MQTTConnectProperties(),
+            PacketTypes.PUBLISH: MQTTPublishProperties(),
+        }
         self.packet_properties = (
-            packet_properties if packet_properties else MQTTConnectProperties()
+            packet_properties if packet_properties else default_packet_properties
         )
 
         self._username: str = broker_config.username
