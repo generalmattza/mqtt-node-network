@@ -31,7 +31,7 @@ dependencies = [
   "tomli==2.0.1",
   "PyYAML==6.0.1",
   "python-json-logger>=2.0.7",
-  "config-loader>=0.1.3",
+  "python-config-loader>=0.1.3",
 ]
 
 
@@ -45,9 +45,9 @@ metrics = [
 ]
 
 [tool.uv.sources]
-config-loader = { git = "https://github.com/generalmattza/python-config-loader.git", rev = "v0.1.3" }
-fast-database-clients = { git = "https://github.com/generalmattza/fast-database-clients.git", rev = "v2.2.6" }
-# fast-database-clients = { workspace = true }
+fast-database-clients = { workspace = true }
+python-config-loader = { git = "https://github.com/generalmattza/python-config-loader.git", rev = "v0.1.3" }
+# fast-database-clients = { git = "https://github.com/generalmattza/fast-database-clients.git", rev = "v2.2.6" }
 
 # Define as a package for uv
 [tool.uv]

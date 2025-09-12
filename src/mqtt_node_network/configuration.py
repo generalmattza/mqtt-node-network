@@ -9,7 +9,7 @@ from paho.mqtt.subscribeoptions import SubscribeOptions
 from paho.mqtt.client import MQTT_CLEAN_START_FIRST_ONLY
 import ssl
 
-from config_loader import load_configs
+from python_config_loader import load_configs
 
 
 class UnpackMixin(Mapping):
