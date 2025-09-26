@@ -281,7 +281,7 @@ class MQTTNode:
         self.reconnect_attempts: int = broker_config.reconnect_attempts
         self.clean_session: bool = broker_config.clean_session
 
-       default_packet_properties =  {
+        default_packet_properties =  {
             PacketTypes.CONNECT: MQTTConnectProperties(),
             PacketTypes.PUBLISH: MQTTPublishProperties(),
         }
@@ -784,3 +784,4 @@ class MQTTNode:
     def close(self):
         self.__del__()
         self.loop_stop()
+
