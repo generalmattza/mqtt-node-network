@@ -36,9 +36,9 @@ class LatencyNode(MQTTNode):
     A subclass of MQTTNode that includes latency monitoring functionality.
     """
 
-    node_client_to_client_latency = Gauge(
-        "node_client_to_client_latency",
-        "Estimated latency between two clients connected through the MQTT broker",
+    client_to_client_latency_seconds = Gauge(
+        "mqtt_client_to_client_latency_seconds",
+        "Estimated latency, in seconds, between two clients connected through the MQTT broker",
         labelnames=("node_id", "node_name", "node_type", "host"),
     )
 

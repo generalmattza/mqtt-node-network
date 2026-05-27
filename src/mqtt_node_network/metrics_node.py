@@ -128,26 +128,15 @@ class MQTTMetricsNode(MQTTNode):
     A specialized MQTTNode for processing metrics with Prometheus integration.
     """
 
-    metric_bytes_received_count = Counter(
-        "metric_bytes_received_total",
-        "Total number of bytes received by a metric node",
-        labelnames=("measurement", "field"),
-    )
-    metric_bytes_sent_count = Counter(
-        "metric_bytes_sent_total",
-        "Total number of bytes sent by a metric node",
+    metric_bytes_received_total = Counter(
+        "mqtt_metric_node_bytes_received_total",
+        "Total number of payload bytes received by the metrics node, broken out per measurement",
         labelnames=("measurement", "field"),
     )
 
-    metric_messages_received_count = Counter(
-        "metric_messages_received_total",
-        "Total number of messages received by a metric node",
-        labelnames=("measurement", "field"),
-    )
-
-    metric_messages_sent_count = Counter(
-        "metric_messages_sent_total",
-        "Total number of messages sent by a metric node",
+    metric_messages_received_total = Counter(
+        "mqtt_metric_node_messages_received_total",
+        "Total number of messages received by the metrics node, broken out per measurement",
         labelnames=("measurement", "field"),
     )
 
@@ -236,11 +225,11 @@ class MQTTMetricsNode(MQTTNode):
         )
         if metric:
             for metric_field in metric["fields"].keys():
-                self.metric_messages_received_count.labels(
+                self.metric_messages_received_total.labels(
                     measurement=metric["measurement"],
                     field=metric_field,
                 ).inc()
-                self.metric_bytes_received_count.labels(
+                self.metric_bytes_received_total.labels(
                     measurement=metric["measurement"],
                     field=metric_field,
                 ).inc(len(message.payload))

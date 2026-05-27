@@ -194,26 +194,26 @@ class MQTTNode:
     A base class representing an MQTT Node, with integrated Prometheus metrics.
     """
 
-    node_bytes_received_count = Counter(
-        "node_bytes_received_total",
+    bytes_received_total = Counter(
+        "mqtt_node_bytes_received_total",
         "Total number of bytes received by node",
         labelnames=("node_id", "node_name", "node_type", "host"),
     )
 
-    node_bytes_sent_count = Counter(
-        "node_bytes_sent_total",
+    bytes_sent_total = Counter(
+        "mqtt_node_bytes_sent_total",
         "Total number of bytes sent by node",
         labelnames=("node_id", "node_name", "node_type", "host"),
     )
 
-    node_messages_received_count = Counter(
-        "node_messages_received_total",
+    messages_received_total = Counter(
+        "mqtt_node_messages_received_total",
         "Total number of messages received by node",
         labelnames=("node_id", "node_name", "node_type", "host"),
     )
 
-    node_messages_sent_count = Counter(
-        "node_messages_sent_total",
+    messages_sent_total = Counter(
+        "mqtt_node_messages_sent_total",
         "Total number of messages sent by node",
         labelnames=("node_id", "node_name", "node_type", "host"),
     )
@@ -524,6 +524,14 @@ class MQTTNode:
         message_info = self.client.publish(
             topic, payload, qos, retain, properties=properties
         )
+        try:
+            payload_size = len(payload) if isinstance(payload, (bytes, bytearray, str)) else 0
+        except TypeError:
+            payload_size = 0
+        if payload_size:
+            self.bytes_sent_total.labels(
+                self.node_id, self.name, self.node_type, self.hostname
+            ).inc(payload_size)
         if ensure_published:
             message_info.wait_for_publish(timeout=self.timeout)
         return message_info
@@ -683,11 +691,11 @@ class MQTTNode:
 
     def on_message(self, client, userdata, message):
 
-        self.node_messages_received_count.labels(
+        self.messages_received_total.labels(
             self.node_id, self.name, self.node_type, self.hostname
         ).inc()
 
-        self.node_bytes_received_count.labels(
+        self.bytes_received_total.labels(
             self.node_id, self.name, self.node_type, self.hostname
         ).inc(len(message.payload))
 
@@ -700,7 +708,7 @@ class MQTTNode:
         )
 
     def on_publish(self, client, userdata, mid, reason_code, properties):
-        self.node_messages_sent_count.labels(
+        self.messages_sent_total.labels(
             self.node_id, self.name, self.node_type, self.hostname
         ).inc()
         self.logger.debug(f"Published message #{mid}")
